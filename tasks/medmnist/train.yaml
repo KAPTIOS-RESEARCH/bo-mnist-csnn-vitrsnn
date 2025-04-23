@@ -1,0 +1,39 @@
+name: medmnist
+seed: 1234
+track: &track False   # W and B
+model:
+  class_name: CSNN
+  module_name: src.models.csnn
+  parameters:
+    in_channels: 1
+    out_channels: 1
+    n_steps: 5
+    encoding_method: direct
+dataloader:
+  class_name: BreastMNISTDataloader
+  module_name: src.data.loaders.BreastMNIST
+  parameters:
+    data_dir: ./data
+    image_size: 128
+    batch_size: 16
+    num_workers: 4
+    debug: True
+
+trainer:
+  class_name: medmnistTrainer
+  module_name: tasks.medmnist.trainer
+  parameters:
+    num_epochs: 2
+    early_stopping_patience: 5
+    lr_scheduler: plateau
+    lr: 0.00002
+    weight_decay: 0.00001
+    track: *track
+    loss:
+      class_name: MSELoss
+      module_name: torch.nn
+      parameters:
+
+experiment:
+  class_name: BaseExperiment
+  module_name: src.core.experiment

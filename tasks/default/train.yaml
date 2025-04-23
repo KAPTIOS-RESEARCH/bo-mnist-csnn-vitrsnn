@@ -1,0 +1,40 @@
+name: DefaultTask
+seed: 1234
+track: &track False
+script_path: /home/jovyan/work
+model:
+  class_name: DefaultSNN
+  module_name: src.models.default
+  parameters:
+    in_channels: 1
+    out_channels: 1
+    n_steps: 5
+    encoding_method: direct
+
+dataloader:
+  class_name: DefaultDataloader
+  module_name: src.data.loaders.default
+  parameters:
+    data_dir: ./data
+    batch_size: 64
+    num_workers: 4
+    debug: False
+
+trainer:
+  class_name: DefaultTrainer
+  module_name: tasks.default.trainer
+  parameters:
+    num_epochs: 10
+    early_stopping_patience: 5
+    lr_scheduler: plateau
+    lr: 0.001
+    weight_decay: 0.00001
+    track: *track
+    loss:
+      class_name: MSELoss
+      module_name: torch.nn
+      parameters:
+
+experiment:
+  class_name: BaseExperiment
+  module_name: src.core.experiment

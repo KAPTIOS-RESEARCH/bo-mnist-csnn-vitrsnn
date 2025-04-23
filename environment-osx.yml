@@ -1,0 +1,37 @@
+name: jelly-env
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10.16
+  - bzip2
+  - ca-certificates
+  - libffi
+  - ncurses
+  - openssl
+  - pip
+  - readline
+  - setuptools
+  - sqlite
+  - tk
+  - tzdata
+  - wheel
+  - xz
+  - zlib
+  - pip:
+    - h5py==3.13.0
+    - matplotlib==3.10.0
+    - numpy==2.2.3
+    - pandas==2.2.3
+    - pyaml==25.1.0
+    - tdqm==0.0.1
+    - torch==2.6.0
+    - torchmetrics==1.6.1
+    - torchvision==0.21.0
+    - tqdm==4.67.1
+    - wandb==0.19.7
+    - onnx==1.16.1
+    - onnxscript==0.2.2
+    - onnxruntime==1.19.2
+    - onnx2torch==1.5.15
+    - spikingjelly==0.0.0.0.14
