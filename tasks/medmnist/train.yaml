@@ -1,6 +1,6 @@
 name: medmnist
 seed: 1234
-track: &track False   # W and B
+track: &track True   # W and 
 model:
   class_name: CSNN
   module_name: src.models.csnn
@@ -16,14 +16,14 @@ dataloader:
     data_dir: ./data
     image_size: 128
     batch_size: 16
-    num_workers: 4
-    debug: True
+    num_workers: 8
+    debug: False
 
 trainer:
   class_name: medmnistTrainer
   module_name: tasks.medmnist.trainer
   parameters:
-    num_epochs: 2
+    num_epochs: 10
     early_stopping_patience: 5
     lr_scheduler: plateau
     lr: 0.00002
