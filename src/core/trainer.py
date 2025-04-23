@@ -1,11 +1,10 @@
-import wandb, torch, os, logging
+import wandb, logging
 from torch import nn
 from torch.utils.data import DataLoader
 from torch.optim import Adam
 from torch.optim.lr_scheduler import ExponentialLR, CosineAnnealingLR, ReduceLROnPlateau
 from src.utils.config import instanciate_module
 from src.optimisation.early_stopping import EarlyStopping
-from torchmetrics.functional.image import peak_signal_noise_ratio as psnr
 
 class BaseTrainer(object):
 
@@ -47,13 +46,18 @@ class BaseTrainer(object):
     def fit(self, train_dl, test_dl, log_dir: str):
         num_epochs = self.parameters['num_epochs']
         for epoch in range(num_epochs):
-            train_loss = self.train(train_dl)
-            test_loss, _, _ = self.test(test_dl)
+            train_loss, train_preds, train_targets = self.train(train_dl)
+            test_loss, test_preds, test_targets = self.test(test_dl)
+            
+            # COMPUTE METRICS HERE
             
             if self.parameters['track']:
                 wandb.log({
                     f"Train/{self.parameters['loss']['class_name']}": train_loss,
                     f"Test/{self.parameters['loss']['class_name']}": test_loss,
+                    ## ADD METRIC WANDB PLOT HERE
+                    # f"Train/Accuracy": train_acc,
+                    # f"Test/Accuracy": test_acc,
                     "_step_": epoch
                 })
                 

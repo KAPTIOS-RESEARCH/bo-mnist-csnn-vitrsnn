@@ -33,7 +33,6 @@ trainer:
       class_name: MSELoss
       module_name: torch.nn
       parameters:
-
 experiment:
   class_name: BaseExperiment
   module_name: src.core.experiment

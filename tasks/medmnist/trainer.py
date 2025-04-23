@@ -15,7 +15,8 @@ class medmnistTrainer(BaseTrainer):
     def train(self, train_loader):
         self.model.train()
         train_loss = 0.0
-        
+        all_preds = []
+        all_targets = []
         with tqdm(train_loader, leave=False, desc="Running training phase") as pbar:
             for sample in train_loader:
                 data, targets = sample
@@ -27,11 +28,13 @@ class medmnistTrainer(BaseTrainer):
                 loss.backward()
                 self.optimizer.step()
                 train_loss += loss.item()
+                all_preds.append(outputs)
+                all_targets.append(targets.cpu())
                 functional.reset_net(self.model)
                 pbar.update(1)
 
         train_loss /= len(train_loader)
-        return train_loss
+        return train_loss, all_preds, all_targets
 
     def test(self, val_loader):
         self.model.eval()
