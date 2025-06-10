@@ -1,11 +1,11 @@
 import numpy as np
 import torch
 from torch.utils.data import Dataset, DataLoader,WeightedRandomSampler, Subset
-from src.data.sets.BreastMNIST import KSpaceBreastMNIST,OriginalBreastMNIST
+from src.data.sets.OrganAMNIST import BaseOrganAMNIST
 
 def get_balanced_loader(dataset, batch_size=64, num_workers=0):
 
-    # Get class counts (frequency)
+    """# Get class counts (frequency)
     labels = np.array([label for _, label in dataset])  
     if labels.ndim > 1: 
         labels = labels.flatten()
@@ -22,21 +22,21 @@ def get_balanced_loader(dataset, batch_size=64, num_workers=0):
 
     # Create sampler
     sampler = WeightedRandomSampler(weights=sampler_weights, num_samples=len(dataset), replacement=True)
-
+    """
     # Create DataLoader
-    balanced_loader = DataLoader(dataset, batch_size=batch_size, sampler=sampler, num_workers=num_workers)
+    balanced_loader = DataLoader(dataset, batch_size=batch_size,  num_workers=num_workers) #sampler=sampler,
 
     return balanced_loader
 
-class BreastMNISTDataloader(object):
+class OrganAMNISTDataloader(object):
     def __init__(self,
                  data_dir: str,
-                 batch_size: int = 4,
+                 batch_size: int = 64,
                  num_workers: int = 4,
                  image_size: int = 128,
-                 debug: bool = True):
+                 debug: bool = False):
 
-        super(BreastMNISTDataloader, self).__init__()
+        super(OrganAMNISTDataloader, self).__init__()
         self.data_dir = data_dir
         self.debug = debug
         self.batch_size = batch_size
@@ -44,26 +44,28 @@ class BreastMNISTDataloader(object):
         self.image_size = image_size
 
     def train(self):
-        train_kspace = OriginalBreastMNIST(self.data_dir, self.image_size, split = "train")
-
-        if self.debug:
-            train_kspace = Subset(train_kspace, range(self.batch_size *2))
+        train_kspace = BaseOrganAMNIST(self.data_dir, self.image_size, split="train")
+        #train_kspace = Organ(self.data_dir)
+        sample = train_kspace[0]
+        print("OrganA MNIST",len(sample))
+        #if self.debug:
+           # train_kspace = Subset(train_kspace, range(self.batch_size *2))
         
-        return get_balanced_loader(train_kspace, batch_size=self.batch_size, num_workers=self.num_workers)
+        return DataLoader(train_kspace, batch_size=self.batch_size,  num_workers=self.num_workers,shuffle=True, drop_last=True )  #get_balanced_loader(train_kspace, batch_size=self.batch_size, num_workers=self.num_workers)
 
     def val(self):
-        val_kspace = OriginalBreastMNIST(self.data_dir, self.image_size, split = "val")
-        if self.debug:
-            val_kspace = Subset(val_kspace, range(self.batch_size *2))
+        val_kspace = BaseOrganAMNIST(self.data_dir, self.image_size, split = "val")
+        #if self.debug:
+            #val_kspace = Subset(val_kspace, range(self.batch_size *2))
         
-        return get_balanced_loader(val_kspace, batch_size=self.batch_size)
+        return DataLoader(val_kspace, batch_size=self.batch_size,  num_workers=self.num_workers,shuffle=False, drop_last=True ) #get_balanced_loader(val_kspace, batch_size=self.batch_size)
     
     def test(self):
-        test_kspace = OriginalBreastMNIST(self.data_dir, self.image_size, split = "test")
-        if self.debug:
-            test_kspace = Subset(test_kspace, range(self.batch_size *2))
+        test_kspace = BaseOrganAMNIST(self.data_dir, self.image_size, split = "test")
+        #if self.debug:
+            #test_kspace = Subset(test_kspace, range(self.batch_size *2))
         
-        return get_balanced_loader(test_kspace, batch_size=self.batch_size, num_workers=self.num_workers)
+        return DataLoader(test_kspace, batch_size=self.batch_size,  num_workers=self.num_workers,shuffle=False, drop_last=True )#get_balanced_loader(test_kspace, batch_size=self.batch_size, num_workers=self.num_workers)
     
 
 

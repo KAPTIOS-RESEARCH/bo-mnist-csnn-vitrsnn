@@ -6,15 +6,16 @@ from spikingjelly.activation_based import functional
 from torchmetrics.classification import BinaryAccuracy
 
 
-class medmnistTrainer(BaseTrainer):
+class rsnnTrainer(BaseTrainer):
 
 
     def __init__(self, model: nn.Module, parameters: dict, device: str):
-        super(medmnistTrainer, self).__init__(model, parameters, device)
+        super(rsnnTrainer, self).__init__(model, parameters, device)
         if not self.criterion:
             self.criterion = nn.MSELoss()  
-
         self.accuracy_metric = BinaryAccuracy().to(device)
+        self.LM_spikes = 1e-4
+
     def train(self, train_loader):
         self.model.train()
         train_loss = 0.0
@@ -27,9 +28,9 @@ class medmnistTrainer(BaseTrainer):
                 data, targets = data.to(self.device), targets.to(self.device)
                 self.optimizer.zero_grad()
                 outputs, sum_spikes  = self.model(data)
-                #print(sum_spikes)
+                #print("number of spikes:", int(sum_spikes))
 
-                loss = self.criterion(outputs, targets) + sum_spikes * 1e-6
+                loss = self.criterion(outputs, targets) + sum_spikes * self.LM_spikes
 
                 prediction = torch.sigmoid(outputs)
                 acc += self.accuracy_metric(prediction, targets).item() * 100
@@ -40,7 +41,7 @@ class medmnistTrainer(BaseTrainer):
                 train_loss += loss.item()
                 all_preds.append(outputs)
                 all_targets.append(targets.cpu())
-                functional.reset_net(self.model)
+                #functional.reset_net(self.model)
                 pbar.update(1)
 
         train_acc = torch.tensor(acc/len(train_loader))
@@ -70,7 +71,7 @@ class medmnistTrainer(BaseTrainer):
                     
                     all_preds.append(outputs)
                     all_targets.append(targets.cpu())
-                    functional.reset_net(self.model)
+                    #functional.reset_net(self.model)
                     pbar.update(1)
 
         all_targets = torch.cat(all_targets)

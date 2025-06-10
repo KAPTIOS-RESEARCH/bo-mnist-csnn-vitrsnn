@@ -34,6 +34,10 @@ class OriginalBreastMNIST(BaseBreastMNIST):
         image, label = self.b_mnist[idx]
         image_np = image.squeeze().numpy()
         image_tensor = torch.tensor(image_np, dtype=torch.float32)
+
+        image_tensor = image_tensor.unsqueeze(0)
+        label = label.squeeze(0).astype('float32')
+        #print("image tensor shape ",image_tensor.shape, label.shape)
         return image_tensor, label
 
 class KSpaceBreastMNIST(BaseBreastMNIST):

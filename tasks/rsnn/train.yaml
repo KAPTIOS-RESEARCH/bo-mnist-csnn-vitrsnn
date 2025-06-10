@@ -1,35 +1,43 @@
-name: csnn #medmnist #name expe
+name: CSnn_100epoch #512hneurons
 seed: 1234
 track: &track True   # W and B
 model:
-  class_name: CSNN
-  module_name: src.models.csnn
+  class_name: CSNN_bis_reg #ViT_RSNN_NoConv #RSNN_ViT_2
+  module_name: src.models.csnn_light
   parameters:
-    in_channels: 1
-    out_channels: 1
+    image_size: 128 #64 # #224 #128
+    n_input: 4096
+    #patch_size: 16 #32
+    #embed_dim: 64
+    #n_hidden:  1000 #512 #1000 #1000
+    n_output: 11
     n_steps: 5
-    encoding_method: direct
+    #beta: .95
+    #threshold: .5
+
+
 dataloader:
   class_name: BreastMNISTDataloader
   module_name: src.data.loaders.BreastMNIST
   parameters:
     data_dir: ./data
-    image_size: 128
-    batch_size: 32
+    image_size: 64 #128
+    batch_size: 64
     num_workers: 8
     debug: False
 
 trainer:
-  class_name: medmnistTrainer
-  module_name: tasks.medmnist.trainer
+  class_name: rsnnTrainer
+  module_name: src.tasks.rsnn.trainer
   parameters:
-    num_epochs: 300
+    num_epochs: 100
     early_stopping_patience: 20
-    lr_scheduler: plateau
-    lr: 0.0001
-    step_size_optim : 10
+    lr_scheduler: #plateau #exponential
+    lr: 0.0001 #1e-4
+    step_size_optim : #10
     weight_decay: 0 #.00001 #0.00001
     gamma_scheduler: 0.5 #0.97
+
     track: *track
     loss:
       class_name: MSELoss
@@ -38,3 +46,4 @@ trainer:
 experiment:
   class_name: BaseExperiment
   module_name: src.core.experiment
+

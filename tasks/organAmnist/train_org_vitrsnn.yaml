@@ -1,0 +1,54 @@
+#"self, n_input, image_size=224, patch_size=16, in_channels=1, embed_dim=64, n_hidden_RNN=100,
+#                 n_hidden=1000, n_output=11, n_steps=5, beta=.8, threshold=.5, cross_last=True):
+
+
+name: ViT_RSNN_NoConv #512hneurons
+seed: 1234
+track: &track True   # W and B
+model:
+  class_name: ViT_RSNN_NoConv_MultiOutput #ViT_RSNN_NoConv #RSNN_ViT_2
+  module_name: src.models.vitrsnn
+  parameters:
+    image_size: &image_size 224
+    #n_input: 4096
+    patch_size: 16 #16 #32
+    in_channels: 1
+    embed_dim: 64
+    n_hidden:  1000 #512 #1000 #1000
+    n_output: 11
+    n_steps: 5 #5
+    #beta: .95
+    threshold: .5
+
+
+dataloader:
+  class_name: OrganAMNISTDataloader
+  module_name: src.data.loaders.OrganAMNIST
+  parameters:
+    data_dir: ./data
+    image_size: *image_size
+    batch_size: 64 #128 #64
+    num_workers: 8
+    debug: False
+
+trainer:
+  class_name: OrgTrainer
+  module_name: tasks.organAmnist.trainer_org
+  parameters:
+    num_epochs: 50
+    early_stopping_patience: 20
+    lr_scheduler: #plateau #exponential
+    lr: 0.0001 #1e-4
+    step_size_optim : #10
+    weight_decay: 0 #.00001 #0.00001
+    gamma_scheduler: 0.5 #0.97
+
+    track: *track
+    loss:
+      class_name: CrossEntropyLoss
+      module_name: torch.nn
+      parameters:
+      
+experiment:
+  class_name: BaseExperiment
+  module_name: src.core.experiment

@@ -57,8 +57,9 @@ class BaseExperiment(AbstractExperiment):
         self.trainer = self.load_trainer(config['trainer'])
 
         # LOGGER 
+        #MedMNIST Classification RSNN vs CSNN
         if self.config['track']:
-            wandb.init(project="MedMNIST Classification", name=experiment_name, config=config, id=date_time, dir=self.log_dir)
+            wandb.init(project="Model Comparison on OrganA", name=experiment_name, config=config, id=date_time, dir=self.log_dir)
             wandb.watch(self.model)
 
     def load_model(self, model_config) -> nn.Module:

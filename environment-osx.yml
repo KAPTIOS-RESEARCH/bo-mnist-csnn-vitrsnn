@@ -35,3 +35,5 @@ dependencies:
     - onnxruntime==1.19.2
     - onnx2torch==1.5.15
     - spikingjelly==0.0.0.0.14
+    - opencv-python==4.11.0
+    - medmnist==3.0.2
