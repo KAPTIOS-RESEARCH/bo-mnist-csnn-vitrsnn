@@ -5,3 +5,10 @@ __pycache__
 /data/
 /logs
 output.log
+/Log_Kenza
+/rsnn_fromLocal
+# Ignore Python cache files
+*.pyc
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
