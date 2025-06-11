@@ -12,3 +12,5 @@ output.log
 # Ignore Jupyter Notebook checkpoints
 .ipynb_checkpoints
 
+*.pth
+*.png
